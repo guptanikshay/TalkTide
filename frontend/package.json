@@ -5,8 +5,8 @@
   "proxy": "http://127.0.0.1:8080",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite --openssl-legacy-provider",
+    "build": "vite --openssl-legacy-provider build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
