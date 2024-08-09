@@ -20,8 +20,6 @@ const userSchema = mongoose.Schema(
 );
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  console.log(enteredPassword);
-  console.log(this.password);
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
@@ -31,7 +29,6 @@ userSchema.pre("save", async function (next) {
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  console.log("Password in pre middleware: ", this.password);
   next();
 });
 

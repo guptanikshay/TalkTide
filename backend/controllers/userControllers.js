@@ -39,9 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
   const user = await User.findOne({ email });
-  console.log(user);
   if (user && (await user.matchPassword(password))) {
     res.json({
       _id: user._id,
@@ -93,8 +91,6 @@ const registerVerifiedUser = asyncHandler(async (req, res) => {
     otp, // Save the OTP in the user document
     otpExpires: Date.now() + 10 * 60 * 1000, // OTP expires in 10 minutes
   });
-
-  console.log(user);
 
   const message = `Your OTP for email verification is ${otp}. This OTP will expire in 10 minutes.`;
 
