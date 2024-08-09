@@ -74,7 +74,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       socket.emit("stop typing", selectedChat._id);
-      console.log(newMessage);
+      // console.log(newMessage);
       try {
         const config = {
           headers: {
@@ -84,8 +84,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
 
         // Add logging to debug the payload
-        console.log("Sending message:", newMessage);
-        console.log("Chat ID:", selectedChat._id); // Ensure _id exists
+        // console.log("Sending message:", newMessage);
+        // console.log("Chat ID:", selectedChat._id); // Ensure _id exists
 
         const { data } = await axios.post(
           "/api/message",

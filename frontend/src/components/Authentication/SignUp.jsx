@@ -19,6 +19,9 @@ const Signup = () => {
   const [password, setPassword] = useState();
   const [pic, setPic] = useState();
   const [picLoading, setPicLoading] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [userId, setUserId] = useState("");
 
   const submitHandler = async () => {
     setPicLoading(true);
@@ -43,7 +46,45 @@ const Signup = () => {
       });
       return;
     }
-    console.log(name, email, password, pic);
+    // console.log(name, email, password, pic);
+    // try {
+    //   const config = {
+    //     headers: {
+    //       "Content-type": "application/json",
+    //     },
+    //   };
+    //   const { data } = await axios.post(
+    //     "/api/user",
+    //     {
+    //       name,
+    //       email,
+    //       password,
+    //       pic,
+    //     },
+    //     config
+    //   );
+    //   console.log(data);
+    //   toast({
+    //     title: "Registration Successful",
+    //     status: "success",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "bottom",
+    //   });
+    //   localStorage.setItem("userInfo", JSON.stringify(data));
+    //   setPicLoading(false);
+    //   navigate("/chats");
+    // } catch (error) {
+    //   toast({
+    //     title: "Error Occured!",
+    //     description: error.response.data.message,
+    //     status: "error",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "bottom",
+    //   });
+    //   setPicLoading(false);
+    // }
     try {
       const config = {
         headers: {
@@ -51,12 +92,44 @@ const Signup = () => {
         },
       };
       const { data } = await axios.post(
-        "/api/user",
+        "/api/user/register",
         {
           name,
           email,
           password,
           pic,
+        },
+        config
+      );
+      // console.log(data);
+      setOtpSent(true);
+      setUserId(data.userId);
+      setPicLoading(false);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+    }
+  };
+
+  const verifyOtp = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "/api/user/verify-otp",
+        {
+          userId,
+          otp,
         },
         config
       );
@@ -69,18 +142,16 @@ const Signup = () => {
         position: "bottom",
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
-      setPicLoading(false);
       navigate("/chats");
     } catch (error) {
       toast({
-        title: "Error Occured!",
+        title: "Error Occured in OTP verfication!",
         description: error.response.data.message,
         status: "error",
         duration: 5000,
         isClosable: true,
         position: "bottom",
       });
-      setPicLoading(false);
     }
   };
 
@@ -185,15 +256,36 @@ const Signup = () => {
           onChange={(e) => postDetails(e.target.files[0])}
         />
       </FormControl>
-      <Button
-        colorScheme="blue"
-        width="100%"
-        style={{ marginTop: 15 }}
-        onClick={submitHandler}
-        isLoading={picLoading}
-      >
-        Sign Up
-      </Button>
+      {!otpSent ? (
+        // Signup form
+        <Button
+          colorScheme="blue"
+          width="100%"
+          style={{ marginTop: 15 }}
+          onClick={submitHandler}
+          isLoading={picLoading}
+        >
+          Sign Up
+        </Button>
+      ) : (
+        // OTP verification form
+        <>
+          <Input
+            type="number"
+            placeholder="Enter OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+          />
+          <Button
+            colorScheme="blue"
+            width="100%"
+            style={{ marginTop: 15 }}
+            onClick={verifyOtp}
+          >
+            Verify OTP
+          </Button>
+        </>
+      )}
     </VStack>
   );
 };
