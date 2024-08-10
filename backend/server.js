@@ -52,17 +52,13 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
   socket.on("setup", (userData) => {
     socket.join(userData._id);
     socket.emit("connected");
-    console.log(`User ${userData._id} has joined their room.`);
   });
 
   socket.on("join chat", (room) => {
     socket.join(room);
-    console.log(`User joined chat room: ${room}`);
   });
 
   socket.on("typing", (room) => socket.in(room).emit("typing"));
@@ -76,7 +72,6 @@ io.on("connection", (socket) => {
       if (user._id == newMessageReceived.sender._id) return;
 
       socket.in(user._id).emit("message received", newMessageReceived);
-      console.log(`Message sent to user: ${user._id}`);
     });
   });
 
